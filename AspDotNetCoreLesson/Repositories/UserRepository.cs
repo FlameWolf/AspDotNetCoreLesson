@@ -29,7 +29,7 @@ namespace AspDotNetCoreLesson.Repositories
 			return await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
 		}
 
-		public async Task<IEnumerable<User>> GetAll()
+		public async Task<IEnumerable<User>> Get()
 		{
 			return _dbContext.Users.AsEnumerable();
 		}

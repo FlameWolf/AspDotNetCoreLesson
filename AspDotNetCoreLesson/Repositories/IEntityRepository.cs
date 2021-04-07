@@ -11,7 +11,7 @@ namespace AspDotNetCoreLesson.Repositories
 
 		public Task<T> Get(uint id);
 
-		public Task<IEnumerable<T>> GetAll();
+		public Task<IEnumerable<T>> Get();
 
 		public Task<T> Update(T model);
 

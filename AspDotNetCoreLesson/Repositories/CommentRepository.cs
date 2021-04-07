@@ -29,7 +29,7 @@ namespace AspDotNetCoreLesson.Repositories
 			return await _dbContext.Comments.FirstOrDefaultAsync(x => x.Id == id);
 		}
 
-		public async Task<IEnumerable<Comment>> GetAll()
+		public async Task<IEnumerable<Comment>> Get()
 		{
 			return _dbContext.Comments.AsEnumerable();
 		}

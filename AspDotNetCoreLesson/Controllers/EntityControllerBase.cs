@@ -20,7 +20,7 @@ namespace AspDotNetCoreLesson.Controllers
 		{
 		}
 
-		[Route("create")]
+		[Route("add")]
 		[HttpPost]
 		public async Task<IActionResult> Add([FromBody] TRequest request)
 		{
@@ -71,13 +71,13 @@ namespace AspDotNetCoreLesson.Controllers
 			return Ok(response);
 		}
 
-		[Route("get-all")]
+		[Route("get")]
 		[HttpGet]
-		public async Task<IActionResult> GetAll()
+		public async Task<IActionResult> Get()
 		{
 			try
 			{
-				var response = await Repository.GetAll();
+				var response = await Repository.Get();
 				return Ok(response);
 			}
 			catch
