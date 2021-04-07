@@ -9,7 +9,6 @@ using System.Linq;
 namespace AspDotNetCoreLesson.Controllers
 {
 	[ApiController]
-	[Route("api/[controller]")]
 	public class ExtendedControllerBase<T>: ControllerBase
 	{
 		protected ILogger Logger { private set; get; }

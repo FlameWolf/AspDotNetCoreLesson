@@ -1,17 +1,20 @@
-using AspDotNetCoreLesson.Activators;
+using AspDotNetCoreLesson.Conventions;
 using AspDotNetCoreLesson.Database;
 using AspDotNetCoreLesson.Filters;
 using AspDotNetCoreLesson.Models;
+using AspDotNetCoreLesson.Providers;
 using AspDotNetCoreLesson.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -70,14 +73,25 @@ namespace AspDotNetCoreLesson
 			services.AddScoped<IEntityRepository<User>, UserRepository>();
 			services.AddScoped<IEntityRepository<Post>, PostRepository>();
 			services.AddScoped<IEntityRepository<Comment>, CommentRepository>();
-			//services.AddSingleton<IControllerActivator>(new EntityControllerActivator<User>());
-			//services.AddSingleton<IControllerActivator>(new EntityControllerActivator<Post>());
-			//services.AddSingleton<IControllerActivator>(new EntityControllerActivator<Comment>());
+			services.TryAddEnumerable
+			(
+				ServiceDescriptor.Transient
+				<
+					IApplicationModelProvider,
+					EntityControllerModelProvider
+				>()
+			);
 			services.AddControllers(options =>
 			{
+				options.Conventions.Add(new EntityControllerRouteConvention());
 				options.Filters.Add<ExceptionFilter>();
 				options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
-			}).AddNewtonsoftJson();
+			})
+			.ConfigureApplicationPartManager(config =>
+			{
+				config.FeatureProviders.Add(new EntityControllerFeatureProvider());
+			})
+			.AddNewtonsoftJson();
 			services.AddSwaggerGen(config =>
 			{
 				config.SwaggerDoc

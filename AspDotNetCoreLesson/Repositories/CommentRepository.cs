@@ -17,7 +17,7 @@ namespace AspDotNetCoreLesson.Repositories
 			_dbContext = dbContext;
 		}
 
-		public async Task<Comment> Create(Comment model)
+		public async Task<Comment> Add(Comment model)
 		{
 			var result = await _dbContext.Comments.AddAsync(model);
 			_dbContext.SaveChanges();

@@ -3,6 +3,11 @@
 		<TargetFramework>net5.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
+	  <Compile Remove="Controllers\CommentController.cs" />
+	  <Compile Remove="Controllers\PostController.cs" />
+	  <Compile Remove="Controllers\UserController.cs" />
+	</ItemGroup>
+	<ItemGroup>
 	  <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.5" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5" />
@@ -11,6 +16,8 @@
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	  <PackageReference Include="ServiceProviderExtensions" Version="1.0.0" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.1" />

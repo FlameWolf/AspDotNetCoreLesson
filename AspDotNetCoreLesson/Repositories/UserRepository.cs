@@ -17,7 +17,7 @@ namespace AspDotNetCoreLesson.Repositories
 			_dbContext = dbContext;
 		}
 
-		public async Task<User> Create(User model)
+		public async Task<User> Add(User model)
 		{
 			var result = await _dbContext.Users.AddAsync(model);
 			await _dbContext.SaveChangesAsync();

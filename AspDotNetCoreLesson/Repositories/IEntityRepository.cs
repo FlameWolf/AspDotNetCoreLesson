@@ -7,7 +7,7 @@ namespace AspDotNetCoreLesson.Repositories
 {
 	public interface IEntityRepository<T>: IRepository
 	{
-		public Task<T> Create(T model);
+		public Task<T> Add(T model);
 
 		public Task<T> Get(uint id);
 

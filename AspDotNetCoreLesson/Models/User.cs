@@ -1,4 +1,5 @@
-﻿using Swashbuckle.AspNetCore.Filters;
+﻿using AspDotNetCoreLesson.Attributes;
+using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace AspDotNetCoreLesson.Models
 {
+	[GeneratedController("api/user")]
 	public class User
 	{
 		public uint Id { set; get; }

@@ -22,7 +22,7 @@ namespace AspDotNetCoreLesson.Controllers
 
 		[Route("create")]
 		[HttpPost]
-		public async Task<IActionResult> CreateUser([FromBody] TRequest request)
+		public async Task<IActionResult> Add([FromBody] TRequest request)
 		{
 			try
 			{
@@ -41,7 +41,7 @@ namespace AspDotNetCoreLesson.Controllers
 						)
 					});
 				}
-				response = await Repository.Create(request);
+				response = await Repository.Add(request);
 				var routeTemplate = GetTemplateForAction(nameof(Get));
 				return Created
 				(
