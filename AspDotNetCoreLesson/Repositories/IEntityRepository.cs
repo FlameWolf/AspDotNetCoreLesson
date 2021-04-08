@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AspDotNetCoreLesson.Repositories
 {
-	public interface IEntityRepository<T>: IRepository
+	public interface IEntityRepository<T>
 	{
 		public Task<T> Add(T model);
 
