@@ -35,7 +35,6 @@ namespace AspDotNetCoreLesson.Providers
 					.ControllerType
 					.GenericTypeArguments[0]
 					.Name;
-				var x = controllerModel.RouteValues;
 			}
 		}
 	}
