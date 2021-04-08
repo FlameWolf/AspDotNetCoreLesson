@@ -1,8 +1,11 @@
 ﻿using AspDotNetCoreLesson.Models;
+using AspDotNetCoreLesson.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Adapters;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Filters;
 using System;
@@ -14,10 +17,30 @@ using System.Threading.Tasks;
 
 namespace AspDotNetCoreLesson.Controllers
 {
-	public class EntityControllerBase<TRequest> : ExtendedControllerBase<TRequest> where TRequest: class, new()
+	public class EntityControllerBase<TRequest> : ControllerBase where TRequest: class, new()
 	{
-		public EntityControllerBase(ILoggerFactory loggerFactory, IServiceProvider provider) : base(loggerFactory, provider)
+		private readonly ILogger _logger;
+		private readonly IEntityRepository<TRequest> _repository;
+
+		public EntityControllerBase(ILoggerFactory loggerFactory, IServiceProvider provider)
 		{
+			_logger = loggerFactory.CreateLogger<EntityControllerBase<TRequest>>();
+			_repository = provider.GetService<IEntityRepository<TRequest>>();
+		}
+
+		protected string GetTemplateForAction(string actionName)
+		{
+			var provider = HttpContext.RequestServices.GetService<IActionDescriptorCollectionProvider>();
+			return provider.ActionDescriptors.Items.FirstOrDefault
+			(
+				x => (x as ControllerActionDescriptor)?.ActionName == actionName
+			)
+			.AttributeRouteInfo?.Template;
+		}
+
+		protected PropertyType GetPropertyValue<PropertyType>(string propertyName, object source)
+		{
+			return (PropertyType)source.GetType().GetProperty(propertyName).GetValue(source);
 		}
 
 		[Route("add")]
@@ -27,7 +50,7 @@ namespace AspDotNetCoreLesson.Controllers
 			try
 			{
 				var Id = GetPropertyValue<uint>("Id", request);
-				var response = await Repository.Get(Id);
+				var response = await _repository.Get(Id);
 				if (response != null)
 				{
 					return Conflict(new HttpResponseMessage
@@ -41,7 +64,7 @@ namespace AspDotNetCoreLesson.Controllers
 						)
 					});
 				}
-				response = await Repository.Add(request);
+				response = await _repository.Add(request);
 				var routeTemplate = GetTemplateForAction(nameof(Get));
 				return Created
 				(
@@ -63,7 +86,7 @@ namespace AspDotNetCoreLesson.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Get(uint id)
 		{
-			var response = await Repository.Get(id);
+			var response = await _repository.Get(id);
 			if (response == null)
 			{
 				return NotFound();
@@ -77,7 +100,7 @@ namespace AspDotNetCoreLesson.Controllers
 		{
 			try
 			{
-				var response = await Repository.Get();
+				var response = await _repository.Get();
 				return Ok(response);
 			}
 			catch
@@ -90,7 +113,7 @@ namespace AspDotNetCoreLesson.Controllers
 		[HttpPatch]
 		public async Task<IActionResult> Update(uint id, [FromBody] PatchRequest<TRequest> request)
 		{
-			TRequest entity = await Repository.Get(id);
+			TRequest entity = await _repository.Get(id);
 			if (entity == null)
 			{
 				return NotFound();
@@ -107,7 +130,7 @@ namespace AspDotNetCoreLesson.Controllers
 			{
 				return BadRequest(ModelState);
 			}
-			var response = await Repository.Update(entity);
+			var response = await _repository.Update(entity);
 			return Ok(response);
 		}
 
@@ -115,7 +138,7 @@ namespace AspDotNetCoreLesson.Controllers
 		[HttpDelete]
 		public async Task<IActionResult> Delete(uint id)
 		{
-			var response = await Repository.Delete(id);
+			var response = await _repository.Delete(id);
 			return Ok(response);
 		}
 	}
