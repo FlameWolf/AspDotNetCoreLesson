@@ -70,9 +70,7 @@ namespace AspDotNetCoreLesson
 					_configuration.GetConnectionString("AspDotNetCoreLesson")
 				);
 			});
-			services.AddScoped<IEntityRepository<User>, UserRepository>();
-			services.AddScoped<IEntityRepository<Post>, PostRepository>();
-			services.AddScoped<IEntityRepository<Comment>, CommentRepository>();
+			services.AddScoped(typeof(IEntityRepository<>), typeof(EntityRepositoryBase<>));
 			services.TryAddEnumerable
 			(
 				ServiceDescriptor.Transient
