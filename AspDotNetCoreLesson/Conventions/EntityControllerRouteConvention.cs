@@ -14,7 +14,7 @@ namespace AspDotNetCoreLesson.Conventions
 	{
 		public void Apply(ControllerModel controller)
 		{
-			if(controller.ControllerType.IsGenericType)
+			if (controller.ControllerType.IsGenericType)
 			{
 				var genericTypeArgument = controller.ControllerType.GenericTypeArguments[0];
 				var generatedControllerAttribute = genericTypeArgument.GetCustomAttribute<GeneratedControllerAttribute>();

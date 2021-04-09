@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AspDotNetCoreLesson.Models
 {
-	public class PatchRequest<TRequest> where TRequest: new()
+	public class PatchRequest<TRequest> where TRequest : new()
 	{
 		public string Op { set; get; }
 		public string From { set; get; }
@@ -64,7 +64,7 @@ namespace AspDotNetCoreLesson.Models
 			);
 		}
 
-		private JObject GetInstanceAsJObject<TSource>() where TSource: new()
+		private JObject GetInstanceAsJObject<TSource>() where TSource : new()
 		{
 			return ConvertToJObject(new TSource());
 		}

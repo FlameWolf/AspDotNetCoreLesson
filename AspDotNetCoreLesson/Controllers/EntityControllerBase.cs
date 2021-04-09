@@ -1,4 +1,5 @@
-﻿using AspDotNetCoreLesson.Models;
+﻿using AspDotNetCoreLesson.Extensions;
+using AspDotNetCoreLesson.Models;
 using AspDotNetCoreLesson.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -17,15 +18,15 @@ using System.Threading.Tasks;
 
 namespace AspDotNetCoreLesson.Controllers
 {
-	public class EntityControllerBase<TRequest> : ControllerBase where TRequest: class, new()
+	public class EntityControllerBase<T> : ControllerBase where T : class, new()
 	{
 		private readonly ILogger _logger;
-		private readonly IEntityRepository<TRequest> _repository;
+		private readonly IEntityRepository<T> _repository;
 
 		public EntityControllerBase(ILoggerFactory loggerFactory, IServiceProvider provider)
 		{
-			_logger = loggerFactory.CreateLogger<EntityControllerBase<TRequest>>();
-			_repository = provider.GetService<IEntityRepository<TRequest>>();
+			_logger = loggerFactory.CreateLogger<EntityControllerBase<T>>();
+			_repository = provider.GetService<IEntityRepository<T>>();
 		}
 
 		protected string GetTemplateForAction(string actionName)
@@ -43,26 +44,32 @@ namespace AspDotNetCoreLesson.Controllers
 			return (PropertyType)source.GetType().GetProperty(propertyName).GetValue(source);
 		}
 
+		private async Task<IActionResult> DoIfNotNull(T response, uint id, Func<Task<IActionResult>> action)
+		{
+			if (response == null)
+			{
+				return NotFound
+				(
+					$"Unable to find a {typeof(T).Name.ToCamel()} with the specified ID ({id})"
+				);
+			}
+			return await action();
+		}
+
 		[Route("add")]
 		[HttpPost]
-		public async Task<IActionResult> Add([FromBody] TRequest request)
+		public async Task<IActionResult> Add([FromBody] T request)
 		{
 			try
 			{
-				var Id = GetPropertyValue<uint>("Id", request);
-				var response = await _repository.Get(Id);
+				var id = GetPropertyValue<uint>("Id", request);
+				var response = await _repository.Get(id);
 				if (response != null)
 				{
-					return Conflict(new HttpResponseMessage
-					{
-						ReasonPhrase = $"A user with the specified Id ({Id}) already exists",
-						Content = new ObjectContent
-						(
-							response.GetType(),
-							response,
-							new JsonMediaTypeFormatter()
-						)
-					});
+					return Conflict
+					(
+						$"A {typeof(T).Name} with the specified ID ({id}) already exists"
+					);
 				}
 				response = await _repository.Add(request);
 				var routeTemplate = GetTemplateForAction(nameof(Get));
@@ -87,11 +94,7 @@ namespace AspDotNetCoreLesson.Controllers
 		public async Task<IActionResult> Get(uint id)
 		{
 			var response = await _repository.Get(id);
-			if (response == null)
-			{
-				return NotFound();
-			}
-			return Ok(response);
+			return await DoIfNotNull(response, id, async () => Ok(response));
 		}
 
 		[Route("get")]
@@ -111,35 +114,38 @@ namespace AspDotNetCoreLesson.Controllers
 
 		[Route("update/{id}")]
 		[HttpPatch]
-		public async Task<IActionResult> Update(uint id, [FromBody] PatchRequest<TRequest> request)
+		public async Task<IActionResult> Update(uint id, [FromBody] PatchRequest<T> request)
 		{
-			TRequest entity = await _repository.Get(id);
-			if (entity == null)
+			var response = await _repository.Get(id);
+			return await DoIfNotNull(response, id, async () =>
 			{
-				return NotFound();
-			}
-			((JsonPatchDocument)request).ApplyTo(entity, error =>
-			{
-				ModelState.AddModelError
-				(
-					error.AffectedObject.GetType().Name,
-					error.ErrorMessage
-				);
+				((JsonPatchDocument)request).ApplyTo(response, error =>
+				{
+					ModelState.AddModelError
+					(
+						error.AffectedObject.GetType().Name,
+						error.ErrorMessage
+					);
+				});
+				if (!ModelState.IsValid)
+				{
+					return BadRequest(ModelState);
+				}
+				response = await _repository.Update(response);
+				return Ok(response);
 			});
-			if (!ModelState.IsValid)
-			{
-				return BadRequest(ModelState);
-			}
-			var response = await _repository.Update(entity);
-			return Ok(response);
 		}
 
 		[Route("delete/{id}")]
 		[HttpDelete]
 		public async Task<IActionResult> Delete(uint id)
 		{
-			var response = await _repository.Delete(id);
-			return Ok(response);
+			var response = await _repository.Get(id);
+			return await DoIfNotNull(response, id, async () =>
+			{
+				response = await _repository.Delete(response);
+				return Ok(response);
+			});
 		}
 	}
 }

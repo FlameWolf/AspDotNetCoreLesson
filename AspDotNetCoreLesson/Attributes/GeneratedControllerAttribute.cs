@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace AspDotNetCoreLesson.Attributes
 {
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-	public class GeneratedControllerAttribute: Attribute
+	public class GeneratedControllerAttribute : Attribute
 	{
 		public string Route { set; get; }
 

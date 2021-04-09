@@ -25,7 +25,7 @@ namespace AspDotNetCoreLesson.Providers
 						x => x is GeneratedControllerAttribute
 					)
 				);
-			foreach(var candidate in candidates)
+			foreach (var candidate in candidates)
 			{
 				feature.Controllers.Add
 				(

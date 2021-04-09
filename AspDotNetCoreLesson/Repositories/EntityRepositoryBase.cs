@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AspDotNetCoreLesson.Repositories
 {
-	public class EntityRepositoryBase<T> : IEntityRepository<T> where T: class
+	public class EntityRepositoryBase<T> : IEntityRepository<T> where T : class
 	{
 		private readonly ApplicationDbContext _dbContext;
 
@@ -33,9 +33,9 @@ namespace AspDotNetCoreLesson.Repositories
 			return result.Entity;
 		}
 
-		public async Task<T> Delete(uint id)
+		public async Task<T> Delete(T model)
 		{
-			var result = _dbContext.Remove<T>(await Get(id));
+			var result = _dbContext.Remove<T>(model);
 			await _dbContext.SaveChangesAsync();
 			return result.Entity;
 		}

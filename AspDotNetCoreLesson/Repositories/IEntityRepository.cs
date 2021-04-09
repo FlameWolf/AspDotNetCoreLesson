@@ -15,6 +15,6 @@ namespace AspDotNetCoreLesson.Repositories
 
 		public Task<T> Update(T model);
 
-		public Task<T> Delete(uint id);
+		public Task<T> Delete(T model);
 	}
 }
