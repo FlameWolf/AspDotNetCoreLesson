@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace AspDotNetCoreLesson.Filters
@@ -22,14 +24,19 @@ namespace AspDotNetCoreLesson.Filters
 
 		public async Task OnExceptionAsync(ExceptionContext context)
 		{
-			var result = new ObjectResult("An exception occurred during the operation");
-			result.ContentTypes = new MediaTypeCollection
+			context.Result = new ObjectResult
+			(
+				new HttpResponseMessage
+				{
+					StatusCode = HttpStatusCode.InternalServerError,
+					ReasonPhrase = "An unexpected error occurred",
+					Content = new StringContent(context.Exception.ToString())
+				}
+			)
 			{
-				new MediaTypeHeaderValue("text/plain")
+				StatusCode = StatusCodes.Status500InternalServerError
 			};
-			result.StatusCode = (int)HttpStatusCode.InternalServerError;
 			context.ExceptionHandled = true;
-			context.Result = result;
 		}
 	}
 }
