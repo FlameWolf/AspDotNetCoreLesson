@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Reflection;
 using AspDotNetCoreLesson.Conventions;
 using AspDotNetCoreLesson.Database;
 using AspDotNetCoreLesson.Filters;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,8 +20,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using System.Linq;
-using System.Reflection;
 
 namespace AspDotNetCoreLesson
 {
@@ -47,8 +48,6 @@ namespace AspDotNetCoreLesson
 				.First();
 		}
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddLogging(builder =>
@@ -119,6 +118,13 @@ namespace AspDotNetCoreLesson
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllers();
+			});
+			app.UseRouter(builder =>
+			{
+				builder.MapGet("/", async context =>
+				{
+					context.Response.Redirect("./swagger/index.html", permanent: false);
+				});
 			});
 		}
 	}
