@@ -3,30 +3,25 @@ using AspDotNetCoreLesson.Models;
 using AspDotNetCoreLesson.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.JsonPatch.Adapters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.Filters;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 
 namespace AspDotNetCoreLesson.Controllers
 {
-	public class EntityControllerBase<T> : ControllerBase where T : class, new()
+	public class EntityControllerBase<TRequest> : ControllerBase where TRequest : class, new()
 	{
 		private readonly ILogger _logger;
-		private readonly IEntityRepository<T> _repository;
+		private readonly IEntityRepository<TRequest> _repository;
 
 		public EntityControllerBase(ILoggerFactory loggerFactory, IServiceProvider provider)
 		{
-			_logger = loggerFactory.CreateLogger<EntityControllerBase<T>>();
-			_repository = provider.GetService<IEntityRepository<T>>();
+			_logger = loggerFactory.CreateLogger<EntityControllerBase<TRequest>>();
+			_repository = provider.GetService<IEntityRepository<TRequest>>();
 		}
 
 		protected string GetTemplateForAction(string actionName)
@@ -44,21 +39,14 @@ namespace AspDotNetCoreLesson.Controllers
 			return (PropertyType)source.GetType().GetProperty(propertyName).GetValue(source);
 		}
 
-		private async Task<IActionResult> DoIfNotNull(T response, uint id, Func<Task<IActionResult>> action)
+		private bool CheckNull(TRequest response, uint id)
 		{
-			if (response == null)
-			{
-				return NotFound
-				(
-					$"Unable to find a {typeof(T).Name.ToCamel()} with the specified ID ({id})"
-				);
-			}
-			return await action();
+			return false;
 		}
 
 		[Route("add")]
 		[HttpPost]
-		public async Task<IActionResult> Add([FromBody] T request)
+		public async Task<IActionResult> Add([FromBody] TRequest request)
 		{
 			try
 			{
@@ -68,7 +56,7 @@ namespace AspDotNetCoreLesson.Controllers
 				{
 					return Conflict
 					(
-						$"A {typeof(T).Name.ToCamel()} with the specified ID ({id}) already exists"
+						$"A {typeof(TRequest).Name} with the specified ID ({id}) already exists"
 					);
 				}
 				response = await _repository.Add(request);
@@ -94,7 +82,14 @@ namespace AspDotNetCoreLesson.Controllers
 		public async Task<IActionResult> Get(uint id)
 		{
 			var response = await _repository.Get(id);
-			return await DoIfNotNull(response, id, async () => Ok(response));
+			if (response == null)
+			{
+				return NotFound
+				(
+					$"Unable to find a {typeof(TRequest).Name.ToCamel()} with the specified ID ({id})"
+				);
+			}
+			return Ok(response);
 		}
 
 		[Route("get")]
@@ -114,26 +109,30 @@ namespace AspDotNetCoreLesson.Controllers
 
 		[Route("update/{id}")]
 		[HttpPatch]
-		public async Task<IActionResult> Update(uint id, [FromBody] PatchRequest<T> request)
+		public async Task<IActionResult> Update(uint id, [FromBody] PatchRequest<TRequest> request)
 		{
 			var response = await _repository.Get(id);
-			return await DoIfNotNull(response, id, async () =>
+			if (response != null)
 			{
-				((JsonPatchDocument)request).ApplyTo(response, error =>
-				{
-					ModelState.AddModelError
-					(
-						error.AffectedObject.GetType().Name,
-						error.ErrorMessage
-					);
-				});
-				if (!ModelState.IsValid)
-				{
-					return BadRequest(ModelState);
-				}
-				response = await _repository.Update(response);
-				return Ok(response);
+				return NotFound
+				(
+					$"Unable to find a {typeof(TRequest).Name.ToCamel()} with the specified ID ({id})"
+				);
+			}
+			((JsonPatchDocument)request).ApplyTo(response, error =>
+			{
+				ModelState.AddModelError
+				(
+					error.AffectedObject.GetType().Name,
+					error.ErrorMessage
+				);
 			});
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+			response = await _repository.Update(response);
+			return Ok(response);
 		}
 
 		[Route("delete/{id}")]
@@ -141,11 +140,15 @@ namespace AspDotNetCoreLesson.Controllers
 		public async Task<IActionResult> Delete(uint id)
 		{
 			var response = await _repository.Get(id);
-			return await DoIfNotNull(response, id, async () =>
+			if (response == null)
 			{
-				response = await _repository.Delete(response);
-				return Ok(response);
-			});
+				return NotFound
+				(
+					$"Unable to find a {typeof(TRequest).Name.ToCamel()} with the specified ID ({id})"
+				);
+			}
+			response = await _repository.Delete(response);
+			return Ok(response);
 		}
 	}
 }
