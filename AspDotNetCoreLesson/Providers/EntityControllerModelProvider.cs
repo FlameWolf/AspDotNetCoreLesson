@@ -1,6 +1,6 @@
-﻿using AspDotNetCoreLesson.Controllers;
+﻿using System.Linq;
+using AspDotNetCoreLesson.Controllers;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using System.Linq;
 
 namespace AspDotNetCoreLesson.Providers
 {

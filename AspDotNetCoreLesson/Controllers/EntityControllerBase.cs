@@ -1,4 +1,7 @@
-﻿using AspDotNetCoreLesson.Extensions;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using AspDotNetCoreLesson.Extensions;
 using AspDotNetCoreLesson.Models;
 using AspDotNetCoreLesson.Repositories;
 using Microsoft.AspNetCore.Http;
@@ -7,9 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AspDotNetCoreLesson.Controllers
 {

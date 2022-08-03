@@ -1,8 +1,8 @@
-﻿using AspDotNetCoreLesson.Attributes;
+﻿using System.Reflection;
+using AspDotNetCoreLesson.Attributes;
 using AspDotNetCoreLesson.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using System.Reflection;
 
 namespace AspDotNetCoreLesson.Conventions
 {

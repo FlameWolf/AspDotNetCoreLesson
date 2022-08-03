@@ -1,6 +1,6 @@
-﻿using AspDotNetCoreLesson.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+using AspDotNetCoreLesson.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.CodeAnalysis;
 
 namespace AspDotNetCoreLesson.Database
 {

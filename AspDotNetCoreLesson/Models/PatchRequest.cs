@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using System.Linq;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using System.Linq;
 
 namespace AspDotNetCoreLesson.Models
 {
