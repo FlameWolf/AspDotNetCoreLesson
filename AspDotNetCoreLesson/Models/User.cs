@@ -26,7 +26,6 @@ namespace AspDotNetCoreLesson.Models
 
 	public class UserPatchExample : IExamplesProvider<PatchRequest<User>>
 	{
-		public PatchRequest<User> GetExamples() =>
-			new PatchRequest<User>(new UserExample().GetExamples());
+		public PatchRequest<User> GetExamples() => new(new UserExample().GetExamples());
 	}
 }

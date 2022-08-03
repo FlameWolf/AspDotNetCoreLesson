@@ -48,7 +48,7 @@ namespace AspDotNetCoreLesson.Models
 			return patchDocument;
 		}
 
-		private JObject ConvertToJObject(object source)
+		private static JObject ConvertToJObject(object source)
 		{
 			return JObject.FromObject
 			(

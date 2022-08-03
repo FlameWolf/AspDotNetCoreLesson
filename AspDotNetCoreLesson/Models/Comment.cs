@@ -28,7 +28,6 @@ namespace AspDotNetCoreLesson.Models
 
 	public class CommentPatchExample : IExamplesProvider<PatchRequest<Comment>>
 	{
-		public PatchRequest<Comment> GetExamples() =>
-			new PatchRequest<Comment>(new CommentExample().GetExamples());
+		public PatchRequest<Comment> GetExamples() => new(new CommentExample().GetExamples());
 	}
 }

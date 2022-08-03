@@ -26,7 +26,6 @@ namespace AspDotNetCoreLesson.Models
 
 	public class PostPatchExample : IExamplesProvider<PatchRequest<Post>>
 	{
-		public PatchRequest<Post> GetExamples() =>
-			new PatchRequest<Post>(new PostExample().GetExamples());
+		public PatchRequest<Post> GetExamples() => new(new PostExample().GetExamples());
 	}
 }
