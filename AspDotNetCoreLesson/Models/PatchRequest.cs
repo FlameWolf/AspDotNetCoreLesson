@@ -16,7 +16,7 @@ namespace AspDotNetCoreLesson.Models
 
 		public PatchRequest()
 		{
-			var requestAsJObject = GetInstanceAsJObject<TRequest>();
+			var requestAsJObject = CreateJObject<TRequest>();
 			Op = "test";
 			From = string.Empty;
 			Path = requestAsJObject.Properties().FirstOrDefault().Name;
@@ -60,7 +60,7 @@ namespace AspDotNetCoreLesson.Models
 			);
 		}
 
-		private JObject GetInstanceAsJObject<TSource>() where TSource : new()
+		private static JObject CreateJObject<TSource>() where TSource : new()
 		{
 			return ConvertToJObject(new TSource());
 		}

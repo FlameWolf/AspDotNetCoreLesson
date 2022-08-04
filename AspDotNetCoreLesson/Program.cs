@@ -12,9 +12,9 @@ namespace AspDotNetCoreLesson
 
 		public static IHostBuilder CreateHostBuilder(string[] args) =>
 			Host.CreateDefaultBuilder(args)
-				.ConfigureWebHostDefaults(webBuilder =>
+				.ConfigureWebHostDefaults(builder =>
 				{
-					webBuilder.UseStartup<Startup>();
+					builder.UseStartup<Startup>();
 				});
 	}
 }

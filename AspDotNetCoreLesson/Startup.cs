@@ -25,11 +25,11 @@ namespace AspDotNetCoreLesson
 {
 	public class Startup
 	{
-		private readonly IConfiguration _configuration;
+		private readonly IConfiguration Configuration;
 
-		public Startup(IConfiguration configuration)
+		public Startup(IConfiguration _configuration)
 		{
-			_configuration = configuration;
+			Configuration = _configuration;
 		}
 
 		private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
@@ -60,7 +60,7 @@ namespace AspDotNetCoreLesson
 			{
 				context.UseSqlServer
 				(
-					_configuration.GetConnectionString("AspDotNetCoreLesson")
+					Configuration.GetConnectionString("AspDotNetCoreLesson")
 				);
 			});
 			services.AddScoped(typeof(IEntityRepository<>), typeof(EntityRepositoryBase<>));

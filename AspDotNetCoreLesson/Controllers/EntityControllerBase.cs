@@ -16,13 +16,13 @@ namespace AspDotNetCoreLesson.Controllers
 {
 	public class EntityControllerBase<TRequest> : ControllerBase where TRequest : class, new()
 	{
-		private readonly ILogger _logger;
-		private readonly IEntityRepository<TRequest> _repository;
+		private readonly ILogger Logger;
+		private readonly IEntityRepository<TRequest> Repository;
 
-		public EntityControllerBase(ILoggerFactory loggerFactory, IServiceProvider provider)
+		public EntityControllerBase(ILoggerFactory _factory, IServiceProvider _provider)
 		{
-			_logger = loggerFactory.CreateLogger<EntityControllerBase<TRequest>>();
-			_repository = provider.GetService<IEntityRepository<TRequest>>();
+			Logger = _factory.CreateLogger<EntityControllerBase<TRequest>>();
+			Repository = _provider.GetService<IEntityRepository<TRequest>>();
 		}
 
 		protected string GetTemplateForAction(string actionName)
@@ -52,7 +52,7 @@ namespace AspDotNetCoreLesson.Controllers
 			try
 			{
 				var id = GetPropertyValue<uint>("Id", request);
-				var response = await _repository.Get(id);
+				var response = await Repository.Get(id);
 				if (response != null)
 				{
 					return Conflict
@@ -60,7 +60,7 @@ namespace AspDotNetCoreLesson.Controllers
 						$"A {typeof(TRequest).Name} with the specified ID ({id}) already exists"
 					);
 				}
-				response = await _repository.Add(request);
+				response = await Repository.Add(request);
 				var routeTemplate = GetTemplateForAction(nameof(Get));
 				return Created
 				(
@@ -82,7 +82,7 @@ namespace AspDotNetCoreLesson.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Get(uint id)
 		{
-			var response = await _repository.Get(id);
+			var response = await Repository.Get(id);
 			if (response == null)
 			{
 				return NotFound
@@ -99,7 +99,7 @@ namespace AspDotNetCoreLesson.Controllers
 		{
 			try
 			{
-				var response = await _repository.Get();
+				var response = await Repository.Get();
 				return Ok(response);
 			}
 			catch
@@ -112,7 +112,7 @@ namespace AspDotNetCoreLesson.Controllers
 		[HttpPatch]
 		public async Task<IActionResult> Update(uint id, [FromBody] PatchRequest<TRequest> request)
 		{
-			var response = await _repository.Get(id);
+			var response = await Repository.Get(id);
 			if (response != null)
 			{
 				return NotFound
@@ -132,7 +132,7 @@ namespace AspDotNetCoreLesson.Controllers
 			{
 				return BadRequest(ModelState);
 			}
-			response = await _repository.Update(response);
+			response = await Repository.Update(response);
 			return Ok(response);
 		}
 
@@ -140,7 +140,7 @@ namespace AspDotNetCoreLesson.Controllers
 		[HttpDelete]
 		public async Task<IActionResult> Delete(uint id)
 		{
-			var response = await _repository.Get(id);
+			var response = await Repository.Get(id);
 			if (response == null)
 			{
 				return NotFound
@@ -148,7 +148,7 @@ namespace AspDotNetCoreLesson.Controllers
 					$"Unable to find a {typeof(TRequest).Name.ToCamel()} with the specified ID ({id})"
 				);
 			}
-			response = await _repository.Delete(response);
+			response = await Repository.Delete(response);
 			return Ok(response);
 		}
 	}

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using AspDotNetCoreLesson.Models;
+﻿using AspDotNetCoreLesson.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AspDotNetCoreLesson.Database
@@ -14,9 +13,9 @@ namespace AspDotNetCoreLesson.Database
 		{
 		}
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		protected override void OnModelCreating(ModelBuilder builder)
 		{
-			modelBuilder.Entity<User>().HasData
+			builder.Entity<User>().HasData
 			(
 				new User
 				{
@@ -31,7 +30,7 @@ namespace AspDotNetCoreLesson.Database
 					Email = "test.user2@server.net"
 				}
 			);
-			modelBuilder.Entity<Post>().HasData
+			builder.Entity<Post>().HasData
 			(
 				new Post
 				{
@@ -46,7 +45,7 @@ namespace AspDotNetCoreLesson.Database
 					Content = "Test post 2"
 				}
 			);
-			modelBuilder.Entity<Comment>().HasData
+			builder.Entity<Comment>().HasData
 			(
 				new Comment
 				{

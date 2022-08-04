@@ -16,22 +16,16 @@ namespace AspDotNetCoreLesson.Providers
 		{
 			foreach
 			(
-				var controllerModel
-				in context.Result.Controllers
-				.Where
+				var controllerModel in context.Result.Controllers.Where
 				(
 					x =>
 					(
-						x.ControllerType.Name ==
-						typeof(EntityControllerBase<>).Name
+						x.ControllerType.Name == typeof(EntityControllerBase<>).Name
 					)
 				)
 			)
 			{
-				controllerModel.ControllerName = controllerModel
-					.ControllerType
-					.GenericTypeArguments[0]
-					.Name;
+				controllerModel.ControllerName = controllerModel.ControllerType.GenericTypeArguments.First().Name;
 			}
 		}
 	}

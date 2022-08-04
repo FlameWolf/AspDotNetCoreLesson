@@ -3,7 +3,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace AspDotNetCoreLesson.Models
 {
-	[GeneratedController("api/user")]
+	[GenerateController("api/user")]
 	public class User
 	{
 		public uint Id { set; get; }

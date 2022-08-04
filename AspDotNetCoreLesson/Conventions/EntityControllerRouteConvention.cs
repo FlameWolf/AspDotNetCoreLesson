@@ -13,10 +13,8 @@ namespace AspDotNetCoreLesson.Conventions
 			if (controller.ControllerType.IsGenericType)
 			{
 				var genericTypeArgument = controller.ControllerType.GenericTypeArguments[0];
-				var generatedControllerAttribute = genericTypeArgument.GetCustomAttribute<GeneratedControllerAttribute>();
-				string route = string.IsNullOrEmpty(generatedControllerAttribute?.Route) ?
-					genericTypeArgument.Name.ToCamel() :
-					generatedControllerAttribute.Route;
+				var generateControllerAttribute = genericTypeArgument.GetCustomAttribute<GenerateControllerAttribute>();
+				string route = string.IsNullOrEmpty(generateControllerAttribute?.Route) ? genericTypeArgument.Name.ToCamel() : generateControllerAttribute.Route;
 				controller.Selectors.Add
 				(
 					new SelectorModel

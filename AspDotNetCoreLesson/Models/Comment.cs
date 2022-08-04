@@ -3,7 +3,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace AspDotNetCoreLesson.Models
 {
-	[GeneratedController("api/comment")]
+	[GenerateController("api/comment")]
 	public class Comment
 	{
 		public uint Id { set; get; }

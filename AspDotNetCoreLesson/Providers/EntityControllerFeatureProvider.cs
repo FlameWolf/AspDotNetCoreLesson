@@ -13,16 +13,14 @@ namespace AspDotNetCoreLesson.Providers
 		public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
 		{
 			var assembly = typeof(EntityControllerFeatureProvider).Assembly;
-			var candidates = assembly
-				.GetExportedTypes()
-				.Where
+			var candidates = assembly.GetExportedTypes().Where
+			(
+				x => x.GetCustomAttributes(true)
+				.Any
 				(
-					x => x.GetCustomAttributes(true)
-					.Any
-					(
-						x => x is GeneratedControllerAttribute
-					)
-				);
+					x => x is GenerateControllerAttribute
+				)
+			);
 			foreach (var candidate in candidates)
 			{
 				feature.Controllers.Add

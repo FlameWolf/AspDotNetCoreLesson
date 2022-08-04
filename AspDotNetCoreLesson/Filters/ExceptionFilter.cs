@@ -10,11 +10,11 @@ namespace AspDotNetCoreLesson.Filters
 {
 	public class ExceptionFilter : IAsyncExceptionFilter
 	{
-		private readonly ILogger _logger;
+		private readonly ILogger Logger;
 
-		public ExceptionFilter(ILoggerFactory loggerFactory)
+		public ExceptionFilter(ILoggerFactory _factory)
 		{
-			_logger = loggerFactory.CreateLogger<ExceptionFilter>();
+			Logger = _factory.CreateLogger<ExceptionFilter>();
 		}
 
 		public async Task OnExceptionAsync(ExceptionContext context)

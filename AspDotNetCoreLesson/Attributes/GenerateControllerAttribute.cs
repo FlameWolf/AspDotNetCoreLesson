@@ -3,15 +3,15 @@
 namespace AspDotNetCoreLesson.Attributes
 {
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-	public class GeneratedControllerAttribute : Attribute
+	public class GenerateControllerAttribute : Attribute
 	{
 		public string Route { set; get; }
 
-		public GeneratedControllerAttribute()
+		public GenerateControllerAttribute()
 		{
 		}
 
-		public GeneratedControllerAttribute(string route)
+		public GenerateControllerAttribute(string route)
 		{
 			Route = route;
 		}
