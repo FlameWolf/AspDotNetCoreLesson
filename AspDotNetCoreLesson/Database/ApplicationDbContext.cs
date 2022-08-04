@@ -10,7 +10,7 @@ namespace AspDotNetCoreLesson.Database
 		public DbSet<Post> Posts { set; get; }
 		public DbSet<Comment> Comments { set; get; }
 
-		public ApplicationDbContext([NotNullAttribute] DbContextOptions options) : base(options)
+		public ApplicationDbContext(DbContextOptions options) : base(options)
 		{
 		}
 
