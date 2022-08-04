@@ -31,18 +31,12 @@ namespace AspDotNetCoreLesson.Controllers
 			return provider.ActionDescriptors.Items.FirstOrDefault
 			(
 				x => (x as ControllerActionDescriptor)?.ActionName == actionName
-			)
-			.AttributeRouteInfo?.Template;
+			).AttributeRouteInfo?.Template;
 		}
 
 		protected PropertyType GetPropertyValue<PropertyType>(string propertyName, object source)
 		{
-			return (PropertyType)source.GetType().GetProperty(propertyName).GetValue(source);
-		}
-
-		private bool CheckNull(TRequest response, uint id)
-		{
-			return false;
+			return (PropertyType)(source.GetType().GetProperty(propertyName).GetValue(source));
 		}
 
 		[Route("add")]

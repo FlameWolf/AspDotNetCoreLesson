@@ -32,57 +32,31 @@ namespace AspDotNetCoreLesson
 			Configuration = _configuration;
 		}
 
-		private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
-		{
-			var builder = new ServiceCollection()
-				.AddLogging()
-				.AddControllers()
-				.AddNewtonsoftJson()
-				.Services
-				.BuildServiceProvider();
-			return builder
-				.GetRequiredService<IOptions<MvcOptions>>()
-				.Value
-				.InputFormatters
-				.OfType<NewtonsoftJsonPatchInputFormatter>()
-				.First();
-		}
+		private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() => (new ServiceCollection()).AddLogging().AddControllers().AddNewtonsoftJson().Services.BuildServiceProvider().GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters.OfType<NewtonsoftJsonPatchInputFormatter>().First();
 
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddLogging(builder =>
 			{
-				builder.AddConsole()
-					.AddDebug()
-					.AddEventLog();
+				builder.AddConsole();
+				builder.AddDebug();
+				builder.AddEventLog();
 			}).AddSingleton<ILoggerFactory, LoggerFactory>();
-			services.AddDbContext<ApplicationDbContext>(context =>
+			services.AddDbContext<DbContext, ApplicationDbContext>(context =>
 			{
-				context.UseSqlServer
-				(
-					Configuration.GetConnectionString("AspDotNetCoreLesson")
-				);
+				context.UseSqlServer(Configuration.GetConnectionString("AspDotNetCoreLesson"));
 			});
 			services.AddScoped(typeof(IEntityRepository<>), typeof(EntityRepositoryBase<>));
-			services.TryAddEnumerable
-			(
-				ServiceDescriptor.Transient
-				<
-					IApplicationModelProvider,
-					EntityControllerModelProvider
-				>()
-			);
+			services.TryAddEnumerable(ServiceDescriptor.Transient<IApplicationModelProvider, EntityControllerModelProvider>());
 			services.AddControllers(options =>
 			{
 				options.Conventions.Add(new EntityControllerRouteConvention());
 				options.Filters.Add<ExceptionFilter>();
 				options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
-			})
-			.ConfigureApplicationPartManager(config =>
+			}).ConfigureApplicationPartManager(config =>
 			{
 				config.FeatureProviders.Add(new EntityControllerFeatureProvider());
-			})
-			.AddNewtonsoftJson();
+			}).AddNewtonsoftJson();
 			services.AddSwaggerGen(config =>
 			{
 				config.SwaggerDoc
@@ -107,11 +81,7 @@ namespace AspDotNetCoreLesson
 				app.UseSwagger();
 				app.UseSwaggerUI(options =>
 				{
-					options.SwaggerEndpoint
-					(
-						"/swagger/v1/swagger.json",
-						"AspDotNetCoreLesson v1"
-					);
+					options.SwaggerEndpoint("/swagger/v1/swagger.json", "AspDotNetCoreLesson v1");
 				});
 				app.UseRouter(builder =>
 				{

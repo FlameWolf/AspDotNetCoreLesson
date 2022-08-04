@@ -14,15 +14,6 @@ namespace AspDotNetCoreLesson.Models
 		public string Path { set; get; }
 		public string Value { set; get; }
 
-		public PatchRequest()
-		{
-			var requestAsJObject = CreateJObject<TRequest>();
-			Op = "test";
-			From = string.Empty;
-			Path = requestAsJObject.Properties().FirstOrDefault().Name;
-			Value = requestAsJObject.Properties().FirstOrDefault().Value.ToString();
-		}
-
 		public PatchRequest(TRequest request)
 		{
 			var requestAsJObject = ConvertToJObject(request);
@@ -31,6 +22,8 @@ namespace AspDotNetCoreLesson.Models
 			Path = requestAsJObject.Properties().FirstOrDefault().Name;
 			Value = requestAsJObject.Properties().FirstOrDefault().Value.ToString();
 		}
+
+		public PatchRequest() : this(new TRequest()) { }
 
 		public static implicit operator JsonPatchDocument(PatchRequest<TRequest> request)
 		{
@@ -58,11 +51,6 @@ namespace AspDotNetCoreLesson.Models
 					ContractResolver = new CamelCasePropertyNamesContractResolver()
 				}
 			);
-		}
-
-		private static JObject CreateJObject<TSource>() where TSource : new()
-		{
-			return ConvertToJObject(new TSource());
 		}
 	}
 }
