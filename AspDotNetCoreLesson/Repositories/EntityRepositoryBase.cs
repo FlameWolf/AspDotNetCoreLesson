@@ -1,4 +1,5 @@
 ﻿using AspDotNetCoreLesson.Database;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,9 +8,9 @@ namespace AspDotNetCoreLesson.Repositories
 {
 	public class EntityRepositoryBase<T> : IEntityRepository<T> where T : class
 	{
-		private readonly ApplicationDbContext _dbContext;
+		private readonly DbContext _dbContext;
 
-		public EntityRepositoryBase(ApplicationDbContext dbContext)
+		public EntityRepositoryBase(DbContext dbContext)
 		{
 			_dbContext = dbContext;
 		}
