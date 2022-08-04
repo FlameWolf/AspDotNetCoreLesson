@@ -113,18 +113,18 @@ namespace AspDotNetCoreLesson
 						"AspDotNetCoreLesson v1"
 					);
 				});
+				app.UseRouter(builder =>
+				{
+					builder.MapGet("/", async context =>
+					{
+						context.Response.Redirect("./swagger/index.html", permanent: false);
+					});
+				});
 			}
 			app.UseRouting();
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllers();
-			});
-			app.UseRouter(builder =>
-			{
-				builder.MapGet("/", async context =>
-				{
-					context.Response.Redirect("./swagger/index.html", permanent: false);
-				});
 			});
 		}
 	}
