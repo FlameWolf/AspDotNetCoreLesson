@@ -107,7 +107,7 @@ namespace AspDotNetCoreLesson.Controllers
 		public async Task<IActionResult> Update(uint id, [FromBody] PatchRequest<TRequest> request)
 		{
 			var response = await Repository.Get(id);
-			if (response != null)
+			if (response == null)
 			{
 				return NotFound
 				(
