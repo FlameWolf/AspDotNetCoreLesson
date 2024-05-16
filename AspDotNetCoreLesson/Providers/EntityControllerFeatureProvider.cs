@@ -15,11 +15,7 @@ namespace AspDotNetCoreLesson.Providers
 			var assembly = typeof(EntityControllerFeatureProvider).Assembly;
 			var candidates = assembly.GetExportedTypes().Where
 			(
-				x => x.GetCustomAttributes(true)
-				.Any
-				(
-					x => x is GenerateControllerAttribute
-				)
+				x => x.GetCustomAttributes(true).Any(x => x is GenerateControllerAttribute)
 			);
 			foreach (var candidate in candidates)
 			{

@@ -8,15 +8,8 @@ using Microsoft.Extensions.Logging;
 
 namespace AspDotNetCoreLesson.Filters
 {
-	public class ExceptionFilter : IAsyncExceptionFilter
+	public class ExceptionFilter(ILogger<ExceptionFilter> Logger) : IAsyncExceptionFilter
 	{
-		private readonly ILogger Logger;
-
-		public ExceptionFilter(ILoggerFactory _factory)
-		{
-			Logger = _factory.CreateLogger<ExceptionFilter>();
-		}
-
 		public async Task OnExceptionAsync(ExceptionContext context)
 		{
 			context.Result = new ObjectResult

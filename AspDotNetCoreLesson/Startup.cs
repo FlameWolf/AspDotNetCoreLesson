@@ -16,32 +16,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace AspDotNetCoreLesson
 {
-	public class Startup
+	public class Startup(IConfiguration Configuration)
 	{
-		private readonly IConfiguration Configuration;
-
-		public Startup(IConfiguration _configuration)
-		{
-			Configuration = _configuration;
-		}
-
 		private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() => (new ServiceCollection()).AddLogging().AddControllers().AddNewtonsoftJson().Services.BuildServiceProvider().GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters.OfType<NewtonsoftJsonPatchInputFormatter>().First();
 
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddLogging(builder =>
-			{
-				builder.AddConsole();
-				builder.AddDebug();
-				builder.AddEventLog();
-			}).AddSingleton<ILoggerFactory, LoggerFactory>();
+			services.AddLogging();
 			services.AddDbContext<DbContext, ApplicationDbContext>(context =>
 			{
 				context.UseSqlServer(Configuration.GetConnectionString("AspDotNetCoreLesson"));

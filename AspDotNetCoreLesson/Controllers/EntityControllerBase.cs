@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AspDotNetCoreLesson.Extensions;
 using AspDotNetCoreLesson.Models;
@@ -14,17 +13,8 @@ using Microsoft.Extensions.Logging;
 
 namespace AspDotNetCoreLesson.Controllers
 {
-	public class EntityControllerBase<TRequest> : ControllerBase where TRequest : class, new()
+	public class EntityControllerBase<TRequest>(ILogger<EntityControllerBase<TRequest>> Logger, IEntityRepository<TRequest> Repository) : ControllerBase where TRequest : class, new()
 	{
-		private readonly ILogger Logger;
-		private readonly IEntityRepository<TRequest> Repository;
-
-		public EntityControllerBase(ILoggerFactory _factory, IServiceProvider _provider)
-		{
-			Logger = _factory.CreateLogger<EntityControllerBase<TRequest>>();
-			Repository = _provider.GetService<IEntityRepository<TRequest>>();
-		}
-
 		protected string GetTemplateForAction(string actionName)
 		{
 			var provider = HttpContext.RequestServices.GetService<IActionDescriptorCollectionProvider>();

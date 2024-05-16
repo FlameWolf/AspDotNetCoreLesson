@@ -1,20 +1,12 @@
-﻿using AspDotNetCoreLesson.Database;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspDotNetCoreLesson.Repositories
 {
-	public class EntityRepositoryBase<T> : IEntityRepository<T> where T : class
+	public class EntityRepositoryBase<T>(DbContext Context) : IEntityRepository<T> where T : class
 	{
-		private readonly DbContext Context;
-
-		public EntityRepositoryBase(DbContext _context)
-		{
-			Context = _context;
-		}
-
 		public async Task<T> Add(T model)
 		{
 			var result = await Context.AddAsync<T>(model);

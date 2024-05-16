@@ -18,10 +18,7 @@ namespace AspDotNetCoreLesson.Providers
 			(
 				var controllerModel in context.Result.Controllers.Where
 				(
-					x =>
-					(
-						x.ControllerType.Name == typeof(EntityControllerBase<>).Name
-					)
+					x => x.ControllerType.Name == typeof(EntityControllerBase<>).Name
 				)
 			)
 			{
