@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using AspDotNetCoreLesson.Conventions;
 using AspDotNetCoreLesson.Database;
 using AspDotNetCoreLesson.Filters;
@@ -24,7 +25,7 @@ namespace AspDotNetCoreLesson
 {
 	public class Startup(IConfiguration Configuration)
 	{
-		private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() => (new ServiceCollection()).AddLogging().AddControllers().AddNewtonsoftJson().Services.BuildServiceProvider().GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters.OfType<NewtonsoftJsonPatchInputFormatter>().First();
+		private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() => new ServiceCollection().AddLogging().AddControllers().AddNewtonsoftJson().Services.BuildServiceProvider().GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters.OfType<NewtonsoftJsonPatchInputFormatter>().First();
 
 		public void ConfigureServices(IServiceCollection services)
 		{
@@ -73,7 +74,7 @@ namespace AspDotNetCoreLesson
 				{
 					builder.MapGet("/", async context =>
 					{
-						context.Response.Redirect("./swagger/index.html", permanent: false);
+						await Task.Run(() => context.Response.Redirect("./swagger/index.html", permanent: false));
 					});
 				});
 			}

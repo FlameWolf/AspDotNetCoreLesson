@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AspDotNetCoreLesson.Controllers
 {
-	public class EntityControllerBase<TRequest>(ILogger<EntityControllerBase<TRequest>> Logger, IEntityRepository<TRequest> Repository) : ControllerBase where TRequest : class, new()
+	public class EntityControllerBase<TRequest>(ILogger<EntityControllerBase<TRequest>> Logger, IEntityRepository<TRequest> Repository) : ControllerBase where TRequest : new()
 	{
 		protected string GetTemplateForAction(string actionName)
 		{
@@ -26,17 +26,17 @@ namespace AspDotNetCoreLesson.Controllers
 
 		protected PropertyType GetPropertyValue<PropertyType>(string propertyName, object source)
 		{
-			return (PropertyType)(source.GetType().GetProperty(propertyName).GetValue(source));
+			return (PropertyType)source.GetType().GetProperty(propertyName).GetValue(source);
 		}
 
 		[Route("add")]
 		[HttpPost]
-		public async Task<IActionResult> Add([FromBody] TRequest request)
+		public async Task<IActionResult> AddAsync([FromBody] TRequest request)
 		{
 			try
 			{
 				var id = GetPropertyValue<uint>("Id", request);
-				var response = await Repository.Get(id);
+				var response = await Repository.GetAsync(id);
 				if (response != null)
 				{
 					return Conflict
@@ -44,8 +44,8 @@ namespace AspDotNetCoreLesson.Controllers
 						$"A {typeof(TRequest).Name} with the specified ID ({id}) already exists"
 					);
 				}
-				response = await Repository.Add(request);
-				var routeTemplate = GetTemplateForAction(nameof(Get));
+				response = await Repository.AddAsync(request);
+				var routeTemplate = GetTemplateForAction(nameof(GetAsync));
 				return Created
 				(
 					routeTemplate.Replace
@@ -64,9 +64,9 @@ namespace AspDotNetCoreLesson.Controllers
 
 		[Route("get/{id}")]
 		[HttpGet]
-		public async Task<IActionResult> Get(uint id)
+		public async Task<IActionResult> GetAsync(uint id)
 		{
-			var response = await Repository.Get(id);
+			var response = await Repository.GetAsync(id);
 			if (response == null)
 			{
 				return NotFound
@@ -79,11 +79,11 @@ namespace AspDotNetCoreLesson.Controllers
 
 		[Route("get")]
 		[HttpGet]
-		public async Task<IActionResult> Get()
+		public async Task<IActionResult> GetAsync()
 		{
 			try
 			{
-				var response = await Repository.Get();
+				var response = await Repository.GetAsync();
 				return Ok(response);
 			}
 			catch
@@ -94,9 +94,9 @@ namespace AspDotNetCoreLesson.Controllers
 
 		[Route("update/{id}")]
 		[HttpPatch]
-		public async Task<IActionResult> Update(uint id, [FromBody] PatchRequest<TRequest> request)
+		public async Task<IActionResult> UpdateAsync(uint id, [FromBody] PatchRequest<TRequest> request)
 		{
-			var response = await Repository.Get(id);
+			var response = await Repository.GetAsync(id);
 			if (response == null)
 			{
 				return NotFound
@@ -116,15 +116,15 @@ namespace AspDotNetCoreLesson.Controllers
 			{
 				return BadRequest(ModelState);
 			}
-			response = await Repository.Update(response);
+			response = await Repository.UpdateAsync(response);
 			return Ok(response);
 		}
 
 		[Route("delete/{id}")]
 		[HttpDelete]
-		public async Task<IActionResult> Delete(uint id)
+		public async Task<IActionResult> DeleteAsync(uint id)
 		{
-			var response = await Repository.Get(id);
+			var response = await Repository.GetAsync(id);
 			if (response == null)
 			{
 				return NotFound
@@ -132,7 +132,7 @@ namespace AspDotNetCoreLesson.Controllers
 					$"Unable to find a {typeof(TRequest).Name.ToCamel()} with the specified ID ({id})"
 				);
 			}
-			response = await Repository.Delete(response);
+			response = await Repository.DeleteAsync(response);
 			return Ok(response);
 		}
 	}

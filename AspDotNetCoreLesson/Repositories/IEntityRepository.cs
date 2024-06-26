@@ -5,10 +5,10 @@ namespace AspDotNetCoreLesson.Repositories
 {
 	public interface IEntityRepository<T>
 	{
-		public Task<T> Add(T model);
-		public Task<T> Get(uint id);
-		public Task<IEnumerable<T>> Get();
-		public Task<T> Update(T model);
-		public Task<T> Delete(T model);
+		public Task<T> AddAsync(T model);
+		public Task<T> GetAsync(uint id);
+		public Task<IEnumerable<T>> GetAsync();
+		public Task<T> UpdateAsync(T model);
+		public Task<T> DeleteAsync(T model);
 	}
 }
